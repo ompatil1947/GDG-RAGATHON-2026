@@ -12,12 +12,12 @@ You are not limited to one challenge. To maximize your chances of winning, you c
 | **Statement 3** | **Hard**       | 70         | Predict placement readiness using LLM data extraction and regression modeling. |
 
 **How it works:**
-- **Total Possible Score:** 120 Points.    
+- **Total Possible Score:** 130 Points.    
 - **Flexibility:** You can choose to do just the Hard one, all three, or any combination.    
 - **Winning Criteria:** The participant with the **highest cumulative points** at the end of 5 days wins.
 
 > [!Note on Evaluation]
-> If two participants both score 120 points, the winner will be decided based on **Code Quality** and **Full-stack Integration** (Frontend + Backend).
+> If two participants both score 130 points, the winner will be decided based on **Code Quality** and **Full-stack Integration** (Frontend + Backend).
 
 ---
 # *Problem Statements*

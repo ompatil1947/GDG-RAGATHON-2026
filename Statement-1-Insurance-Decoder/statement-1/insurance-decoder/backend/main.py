@@ -96,7 +96,7 @@ async def ask_question(query_data: QueryModel):
             
         llm = ChatGroq(
             groq_api_key=groq_api_key,
-            model_name="llama3-8b-8192",
+            model_name="llama-3.1-8b-instant",
             temperature=0
         )
         

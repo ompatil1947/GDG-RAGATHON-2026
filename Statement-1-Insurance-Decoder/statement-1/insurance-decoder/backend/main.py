@@ -6,7 +6,8 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_groq import ChatGroq
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -62,10 +63,8 @@ async def upload_pdf(file: UploadFile = File(...)):
         chunks = text_splitter.split_documents(documents)
         
         # Embed and store
-        if not os.getenv("OPENAI_API_KEY"):
-            raise HTTPException(status_code=500, detail="OpenAI API Key not set.")
-            
-        embeddings = OpenAIEmbeddings()
+        # Embeddings run locally
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         vectorstore = FAISS.from_documents(chunks, embeddings)
         vectorstore.save_local(FAISS_INDEX_PATH)
         retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
@@ -81,7 +80,7 @@ async def ask_question(query_data: QueryModel):
     # Try to load vectorstore if it's not in memory
     if vectorstore is None:
         try:
-            embeddings = OpenAIEmbeddings()
+            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
             if os.path.exists(FAISS_INDEX_PATH):
                 vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
                 retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
@@ -91,7 +90,15 @@ async def ask_question(query_data: QueryModel):
             raise HTTPException(status_code=500, detail=f"Error loading vectorstore: {str(e)}")
             
     try:
-        llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+        groq_api_key = os.getenv("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")
+        if not groq_api_key:
+            raise HTTPException(status_code=500, detail="GROQ_API_KEY not set.")
+            
+        llm = ChatGroq(
+            groq_api_key=groq_api_key,
+            model_name="llama3-8b-8192",
+            temperature=0
+        )
         
         # Define JSON parser
         parser = JsonOutputParser(pydantic_object=AskResponse)

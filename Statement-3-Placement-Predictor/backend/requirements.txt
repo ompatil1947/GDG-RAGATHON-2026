@@ -11,3 +11,4 @@ python-multipart
 pydantic
 joblib
 python-dotenv
+python-docx

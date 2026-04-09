@@ -23,7 +23,9 @@ async def predict(req: PredictRequest):
         "opensource": req.opensource,
         "tech_stack_score": min(len(req.tech_stack) / 2.0, 5.0)
     }
-    score = predict_score(features)
+    result = predict_score(features)
+    score = result["score"]
+    breakdown = result["breakdown"]
     
     # Generate tier label and advice
     if score >= 80:
@@ -38,5 +40,7 @@ async def predict(req: PredictRequest):
     else:
         tier = "Early Stage"
         advice = "Start with fundamentals: pick a core tech stack and build 2-3 solid projects."
+        
+    advice += f"\n\n**Why this score?** {breakdown}"
     
     return {"score": score, "tier": tier, "advice": advice}
